@@ -1,0 +1,145 @@
+/* --- LOADER --- */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dark-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s;
+}
+
+.autobot-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--prime-blue);
+    border-top: 5px solid rgba(220, 10, 10, 0.847);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+#loader.fade-out { opacity: 0; visibility: hidden; }
+
+/* --- NAVEGACIÓN TÁCTICA (Metálica y Eléctrica) --- */
+.navbar {
+    /* Degradado tipo metal oscuro */
+    background: linear-gradient(180deg, #1a1e24 0%, #0a0c10 100%);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    /* Borde inferior con brillo de neón eléctrico */
+    border-bottom: 2px solid var(--prime-red);
+    box-shadow: 0 2px 15px rgba(220, 10, 10, 0.847);
+    height: 65px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-around;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--silver);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de luz eléctrica al pasar el mouse */
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.nav-item:hover::before {
+    left: 100%;
+}
+
+.nav-icon { 
+    font-size: 1.3rem; 
+    transition: transform 0.3s ease;
+}
+
+.nav-text { 
+    font-size: 0.6rem; 
+    letter-spacing: 2px; 
+    font-weight: 800;
+    color: var(--silver);
+}
+
+/* Estado Activo: Energía Azul */
+.nav-item.active {
+    color: var(--neon-blue);
+    background: radial-gradient(circle at center, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+}
+
+.nav-item.active .nav-icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px var(--neon-blue));
+}
+
+.nav-item.active .nav-text {
+    color: white;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* Efecto de luz eléctrica optimizado para touch */
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%; 
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent 30%, 
+        rgba(0, 212, 255, 0.4) 50%, 
+        transparent 70%
+    );
+    pointer-events: none; /* Evita que el efecto interfiera con el clic */
+}
+
+/* En mobile, el efecto se activa al presionar (active) o al quedar seleccionado */
+.nav-item:active::before,
+.nav-item.active::before {
+    animation: scan-electric 0.6s ease-in-out;
+}
+
+@keyframes scan-electric {
+    0% { left: -150%; }
+    100% { left: 150%; }
+}
+
+/* Solo habilitamos el hover real si detectamos un mouse (Desktop) */
+@media (hover: hover) {
+    .nav-item:hover::before {
+        animation: scan-electric 0.8s ease-in-out;
+    }
+}

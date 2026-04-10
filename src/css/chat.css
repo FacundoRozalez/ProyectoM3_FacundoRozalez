@@ -1,0 +1,98 @@
+/* --- CHAT INTERFACE (Mobile First) --- */
+#chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 65px); 
+    padding: 10px;
+    background-color: var(--dark-bg);
+    
+    background-image: url('../assets/optimus.webp');
+    background-repeat: no-repeat;
+
+    /* SOLUCIÓN: Limitamos el alto para que no crezca descontrolado */
+    /* 85% de ancho, pero máximo un 40% del alto de la pantalla */
+    background-size: contain; 
+    width: 100%;
+    
+    /* Usamos porcentajes para el tamaño del fondo de forma más estricta */
+    background-size: 85% 60%; /* Ancho 85%, Alto 40% de la caja */
+    
+    background-position: center 10%; /* Mantener a Optimus arriba */
+    
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+#chat-screen {
+    /* flex-grow: 1 hace que esta caja ocupe el espacio y empuje el input abajo */
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    /* Fondo sólido al 0.8 para que los mensajes se lean bien */
+    background: rgba(13, 17, 23, 0.8); 
+    border: 1px solid var(--prime-blue);
+    border-radius: 8px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.user-msg { 
+    align-self: flex-end; 
+    background: var(--prime-blue); 
+    color: white; 
+    border-bottom-right-radius: 2px;
+}
+
+.prime-msg { 
+    align-self: flex-start; 
+    background: #21262d; 
+    border-left: 3px solid var(--prime-red); 
+    border-bottom-left-radius: 2px;
+}
+
+/* ÁREA DE INPUT: Aseguramos que sea visible siempre */
+.input-area { 
+    display: flex; 
+    gap: 8px; 
+    padding: 10px 0 5px 0; /* Un poco más de aire arriba */
+    flex-shrink: 0; /* Evita que el área de escritura se aplaste */
+}
+
+#user-msg { 
+    flex-grow: 1; 
+    background: #0d1117; 
+    border: 1px solid var(--silver); 
+    color: white; 
+    padding: 12px; 
+    border-radius: 4px; 
+    font-size: 1rem; /* 1rem evita el zoom molesto en iOS */
+    outline: none;
+}
+
+#user-msg:focus {
+    border-color: var(--neon-blue);
+}
+
+#send-btn { 
+    background: var(--prime-red); 
+    border: none; 
+    color: white; 
+    padding: 0 20px; 
+    border-radius: 4px; 
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#send-btn:active {
+    background: #0e27b3; /* Feedback visual al tocar en mobile */
+}

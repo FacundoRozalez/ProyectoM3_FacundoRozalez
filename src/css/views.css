@@ -1,0 +1,150 @@
+/* --- VISTAS --- */
+.view {
+    height: calc(100dvh - 60px);
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* HOME: Fondo técnico y Logo flotante */
+.home-view {
+    background: radial-gradient(circle, #1c2128 0%, #0d1117 100%);
+    background-image: 
+        linear-gradient(rgba(0, 51, 153, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 51, 153, 0.05) 1px, transparent 1px);
+    background-size: 25px 25px;
+}
+
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(13, 17, 23, 0.6);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 51, 153, 0.3);
+    width: 95%;
+    max-width: 450px;
+}
+
+.autobot-logo-display {
+    width: 100px; /* Tamaño optimizado para mobile */
+    height: 100px;
+    background: url('../assets/autobot.webp') no-repeat center/contain;
+    filter: drop-shadow(0 0 12px var(--prime-red));
+    margin-bottom: 15px;
+    animation: floating-prime 4s ease-in-out infinite;
+}
+
+@keyframes floating-prime {
+    0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px var(--prime-red)); }
+    50% { transform: translateY(-10px) scale(1.05); filter: drop-shadow(0 0 20px var(--prime-red)); }
+}
+
+.glitch {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.hero-text {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    margin-bottom: 8px;
+}
+
+.hero-subtext {
+    color: var(--silver);
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+}
+
+.btn-main {
+    background: var(--prime-red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(25, 18, 227, 0.4);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+/* ABOUT */
+.about-view {
+    background-image: linear-gradient(rgba(0, 51, 153, 0.5), rgba(13, 17, 23, 0.9)), 
+                      url('../assets/cybertron.webp');
+    background-size: cover;
+}
+
+/* --- ESTILOS ESPECÍFICOS DE ABOUT --- */
+.about-card {
+    background: rgba(13, 17, 23, 0.9);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid var(--prime-blue);
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 51, 153, 0.3);
+}
+
+.about-title {
+    color: var(--neon-blue);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.about-info {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.about-divider {
+    border: 0;
+    border-top: 1px solid var(--prime-red);
+    margin: 15px 0;
+}
+
+.about-system {
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.system-title {
+    color: var(--prime-red);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.system-quote {
+    margin-top: 10px;
+    color: var(--silver);
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 0.7rem;
+}
+
+/* --- DESKTOP --- */
+@media (min-width: 768px) {
+    .view { height: calc(100vh - 60px); }
+    #chat-wrapper { max-width: 700px; margin: 0 auto; border: 1px solid var(--prime-blue); }
+    .nav-item { flex-direction: row; gap: 8px; }
+    .nav-text { font-size: 0.8rem; }
+    .autobot-logo-display { width: 140px; height: 140px; }
+    .glitch { font-size: 1.8rem; }
+}
