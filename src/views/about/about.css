@@ -1,0 +1,58 @@
+
+/* ABOUT */
+.about-view {
+    background-image: linear-gradient(rgba(0, 51, 153, 0.5), rgba(13, 17, 23, 0.9)), 
+                      url('/src/assets/cybertron.webp');
+    background-size: cover;
+}
+
+/* --- ESTILOS ESPECÍFICOS DE ABOUT --- */
+.about-card {
+    background: rgba(13, 17, 23, 0.9);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid var(--prime-blue);
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 51, 153, 0.3);
+}
+
+.about-title {
+    color: var(--neon-blue);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.about-info {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.about-divider {
+    border: 0;
+    border-top: 1px solid var(--prime-red);
+    margin: 15px 0;
+}
+
+.about-system {
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.system-title {
+    color: var(--prime-red);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.system-quote {
+    margin-top: 10px;
+    color: var(--silver);
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 0.7rem;
+}

@@ -6,7 +6,7 @@
     padding: 10px;
     background-color: var(--dark-bg);
     
-    background-image: url('../assets/optimus.webp');
+    background-image: url('/src/assets/optimus.webp');
     background-repeat: no-repeat;
 
     /* SOLUCIÓN: Limitamos el alto para que no crezca descontrolado */

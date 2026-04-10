@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateInput, formatName, cleanMessage, getTimestamp } from '../src/utils.js';
+import { validateInput, formatName, cleanMessage, getTimestamp } from '../src/utils/validators.js';
 
 describe('Pruebas de Utilidades Autobot', () => {
     

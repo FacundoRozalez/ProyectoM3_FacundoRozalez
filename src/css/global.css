@@ -1,0 +1,45 @@
+:root {
+    --prime-blue: #003399;
+    --prime-red: #0038c7;
+    --dark-bg: #0d1117;
+    --card-bg: rgba(22, 27, 34, 0.85);
+    --text-color: #f0f6fc;
+    --silver: #8b949e;
+    --neon-blue: #00d4ff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--dark-bg);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+/* --- VISTAS --- */
+.view {
+    height: calc(100dvh - 60px);
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+
+/* --- DESKTOP --- */
+@media (min-width: 768px) {
+    .view { height: calc(100vh - 60px); }
+    #chat-wrapper { max-width: 700px; margin: 0 auto; border: 1px solid var(--prime-blue); }
+    .nav-item { flex-direction: row; gap: 8px; }
+    .nav-text { font-size: 0.8rem; }
+    .autobot-logo-display { width: 140px; height: 140px; }
+    .glitch { font-size: 1.8rem; }
+}
