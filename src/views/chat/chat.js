@@ -49,57 +49,48 @@ export function setupChatLogic() {
     }; */
 
     const sendMessage = async () => {
-        const text = input.value;
-        if (!validateInput(text)) return;
+    const text = input.value.trim();
+    if (!text) {
+      return;
+    }
 
-        // 1. Feedback inmediato: agregamos el mensaje del usuario
-        conversationHistory.push({ role: 'user', text });
-        renderHistory();
-        input.value = '';
+    conversationHistory.push({ role: 'user', text });
+    renderHistory();
+    input.value = '';
+    input.disabled = true;
 
-        // Bloqueamos el input mientras Optimus responde (buena práctica)
-        input.disabled = true;
+    try {
+        const response = await fetch('/api/functions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: text,
+                history: conversationHistory.slice(0, -1)
+            })
+        });
 
-        try {
-            const response = await fetch('/api/functions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: text,
-                    history: conversationHistory.slice(0, -1) // Enviamos el historial acumulado
-                })
-            });
-
-            if (!response.ok) throw new Error('Error en la comunicación con la Matrix');
-
-            const data = await response.json();
-
-            /**
-             * 2. SINCRONIZACIÓN ROBUSTA:
-             * Mapeamos el historial que devuelve el backend al formato plano
-             * que usa tu función renderHistory.
-             */
-            conversationHistory = data.updatedHistory.map(msg => {
-                // Buscamos el texto de forma segura en cualquier formato posible
-                const content = msg.text || (msg.parts && msg.parts[0] && msg.parts[0].text) || "";
-                return {
-                    role: msg.role === 'user' ? 'user' : 'model',
-                    text: content
-                };
-            });
-
-            renderHistory();
-        } catch (error) {
-            console.error('Error:', error);
-            conversationHistory.push({ role: 'model', text: 'La Matrix está desconectada. ¡Resistan!' });
-            renderHistory();
-        } finally {
-            // Siempre desbloqueamos el input al terminar
-            input.disabled = false;
-            input.focus();
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.details || 'Error');
         }
-    };
+
+        conversationHistory = data.updatedHistory;
+        renderHistory();
+
+    } catch (error) {
+        console.error(error);
+        conversationHistory.push({ role: 'model', text: 'Enlace perdido. ¡Resistan!' });
+        renderHistory();
+    } finally {
+        input.disabled = false;
+        input.focus();
+    }
+};
 
     btn.onclick = sendMessage;
     input.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
 }
+
+
+
+

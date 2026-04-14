@@ -7,52 +7,47 @@ export default async function handler(req, res) {
 
   try {
     const { message, history = [] } = req.body;
-    
-    if (!message || message.trim().length === 0) {
-      return res.status(400).json({ 
-        error: 'Debes proporcionar un mensaje' 
-      });
+    if (!message) {
+      return res.status(400).json({ error: 'Mensaje vacío' });
     }
-    
-    // Inicializar Gemini con un modelo REAL
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash' // <--- ESTE es el modelo correcto y rápido
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // Instrucción de personalidad
+    let fullPrompt = "Eres Optimus Prime, líder de los Autobots. Responde de forma heroica, sabia y breve. Máximo 2 oraciones.\n";
+    
+    // Construcción del hilo de conversación (Memoria)
+    history.slice(-4).forEach(msg => {
+      fullPrompt += `${msg.role === 'user' ? 'Aliado' : 'Optimus'}: ${msg.text}\n`;
     });
 
-    // Formatear el historial para que no rompa la Matrix
-    const formattedHistory = history.slice(-4).map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: String(msg.text || "") }]
-    }));
-    
-    // Instrucción de personalidad integrada en el inicio del chat
-    const chat = model.startChat({
-        history: formattedHistory,
-        generationConfig: { maxOutputTokens: 100 }
+    fullPrompt += `Aliado: ${message}\nOptimus:`;
+
+    // Llamada con configuración de temperatura y límites
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
+      generationConfig: {
+        temperature: 0.7,      // Controla la creatividad (0.7 es ideal para Optimus)
+        maxOutputTokens: 100,  // Ahorra tokens limitando la longitud de respuesta
+        topP: 0.9,             // Mejora la selección de palabras
+      },
     });
 
-    // Prompt personalizado como Optimus
-    const prompt = `Eres Optimus Prime. Responde de forma heroica y breve al siguiente mensaje: "${message}"`;
-    
-    const result = await chat.sendMessage(prompt);
     const response = await result.response;
     const responseText = response.text().trim();
-    
+
     return res.status(200).json({ 
       text: responseText,
       updatedHistory: [
-          ...formattedHistory,
-          { role: "user", parts: [{ text: message }] },
-          { role: "model", parts: [{ text: responseText }] }
+        ...history.slice(-4),
+        { role: 'user', text: message },
+        { role: 'model', text: responseText }
       ]
     });
-    
+
   } catch (error) {
-    console.error('Error llamando a Gemini:', error);
-    return res.status(500).json({ 
-      error: 'Error al obtener respuesta de la Matrix',
-      details: error.message 
-    });
+    console.error('Error en la Matrix:', error);
+    return res.status(500).json({ error: 'Error al obtener respuesta', details: error.message });
   }
 }
