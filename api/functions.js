@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     // Inicializar Gemini con un modelo REAL
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash' // <--- ESTE es el modelo correcto y rápido
+      model: 'gemini-2.5-flash' // <--- ESTE es el modelo correcto y rápido
     });
 
     // Formatear el historial para que no rompa la Matrix
