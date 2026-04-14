@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // Usamos gemini-1.5-flash ya que 2.5 no es una versión oficial estable
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // 1. DEFINICIÓN DEL ROL (Se envía al inicio del prompt)
     let fullPrompt = `INSTRUCCIÓN DE SISTEMA:
