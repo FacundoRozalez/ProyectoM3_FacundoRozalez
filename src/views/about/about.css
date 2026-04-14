@@ -14,7 +14,6 @@
     border: 1px solid var(--prime-blue);
     max-width: 90%;
     max-height: 90%;
-    overflow-y: auto;
     box-shadow: 0 0 20px rgba(0, 51, 153, 0.3);
 }
 
@@ -55,4 +54,92 @@
     width: 100%;
     margin-top: 20px;
     font-size: 0.7rem;
+    background: var(--prime-red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-full:hover {
+    background: #0c1fb8;
+    box-shadow: 0 0 12px rgba(220, 10, 10, 0.5);
+}
+
+/* --- TABLET ABOUT (768px - 1024px) --- */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .about-card {
+        padding: 35px;
+        max-width: 80%;
+        max-height: 85%;
+    }
+    .about-title {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+    .about-info {
+        margin-top: 20px;
+    }
+    .about-divider {
+        margin: 20px 0;
+    }
+    .about-system {
+        font-size: 0.95rem;
+    }
+    .system-title {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    .system-quote {
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+    .btn-full {
+        margin-top: 25px;
+        font-size: 0.8rem;
+        padding: 14px 24px;
+    }
+}
+
+/* --- DESKTOP ABOUT (1025px+) --- */
+@media (min-width: 1025px) {
+    .about-card {
+        padding: 45px;
+        max-width: 70%;
+        max-height: 80%;
+    }
+    .about-title {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    .about-info {
+        margin-top: 25px;
+        line-height: 1.6;
+    }
+    .about-divider {
+        margin: 25px 0;
+    }
+    .about-system {
+        font-size: 1rem;
+    }
+    .system-title {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    .system-quote {
+        margin-top: 20px;
+        font-size: 0.95rem;
+    }
+    .btn-full {
+        margin-top: 30px;
+        font-size: 0.9rem;
+        padding: 16px 32px;
+    }
+    .btn-full:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(220, 10, 10, 0.6);
+    }
 }

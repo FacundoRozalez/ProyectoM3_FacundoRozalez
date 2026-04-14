@@ -15,7 +15,10 @@
     backdrop-filter: blur(5px);
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid rgba(0, 51, 153, 0.3);
+    border-top: 3px solid var(--prime-blue);
+    border-bottom: 3px solid var(--prime-blue);
+    border-left: 1px solid rgba(0, 51, 153, 0.3);
+    border-right: 1px solid rgba(0, 51, 153, 0.3);
     width: 95%;
     max-width: 450px;
 }
@@ -66,4 +69,76 @@
     box-shadow: 0 4px 12px rgba(25, 18, 227, 0.4);
     text-transform: uppercase;
     font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.btn-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(25, 18, 227, 0.6);
+}
+
+/* --- TABLET HOME (768px - 1024px) --- */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .hero-container {
+        padding: 35px;
+        max-width: 550px;
+        border-top: 4px solid var(--prime-blue);
+        border-bottom: 4px solid var(--prime-blue);
+    }
+    .autobot-logo-display {
+        width: 130px;
+        height: 130px;
+        margin-bottom: 20px;
+    }
+    .glitch {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+    }
+    .hero-text {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    .hero-subtext {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+    .btn-main {
+        padding: 14px 28px;
+        font-size: 0.85rem;
+    }
+}
+
+/* --- DESKTOP HOME (1025px+) --- */
+@media (min-width: 1025px) {
+    .hero-container {
+        padding: 50px;
+        max-width: 650px;
+        border-top: 5px solid var(--prime-blue);
+        border-bottom: 5px solid var(--prime-blue);
+    }
+    .autobot-logo-display {
+        width: 160px;
+        height: 160px;
+        margin-bottom: 25px;
+    }
+    .glitch {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    .hero-text {
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+    .hero-subtext {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    .btn-main {
+        padding: 16px 32px;
+        font-size: 0.9rem;
+    }
+    .btn-main:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(25, 18, 227, 0.7);
+    }
 }

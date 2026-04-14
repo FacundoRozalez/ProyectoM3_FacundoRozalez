@@ -7,11 +7,11 @@ export const renderHome = () => `
             <h1 class="glitch" data-text="FRECUENCIA AUTOBOT">FRECUENCIA AUTOBOT</h1>
             
             <p class="hero-text">
-                "Este escudo es la promesa de proteger a los que no pueden defenderse por sí mismos."
+                "Soy Optimus Prime, y envío este mensaje a todos los Autobots supervivientes que se refugian entre las estrellas: estamos aquí, estamos esperando."
             </p>
             
             <p class="hero-subtext">
-                Bajo esta insignia, yo, <strong>Optimus Prime</strong>, te doy la bienvenida. Mi chispa detecta tu nobleza.
+                "Este escudo es la promesa de proteger a los que no pueden defenderse por sí mismos."
             </p>
 
             <button class="btn-main pulse" onclick="window.navigateTo('/chat')">

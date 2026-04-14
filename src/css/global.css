@@ -34,10 +34,20 @@ html, body {
 }
 
 
-/* --- DESKTOP --- */
-@media (min-width: 768px) {
+/* --- TABLET (768px - 1024px) --- */
+@media (min-width: 768px) and (max-width: 1024px) {
     .view { height: calc(100vh - 60px); }
-    #chat-wrapper { max-width: 700px; margin: 0 auto; border: 1px solid var(--prime-blue); }
+    #chat-wrapper { max-width: 600px; margin: 0 auto; border: 1px solid var(--prime-blue); }
+    .nav-item { flex-direction: row; gap: 8px; }
+    .nav-text { font-size: 0.75rem; }
+    .autobot-logo-display { width: 120px; height: 120px; }
+    .glitch { font-size: 1.5rem; }
+}
+
+/* --- DESKTOP (1025px+) --- */
+@media (min-width: 1025px) {
+    .view { height: calc(100vh - 60px); }
+    #chat-wrapper { max-width: 800px; margin: 0 auto; border: 1px solid var(--prime-blue); }
     .nav-item { flex-direction: row; gap: 8px; }
     .nav-text { font-size: 0.8rem; }
     .autobot-logo-display { width: 140px; height: 140px; }
