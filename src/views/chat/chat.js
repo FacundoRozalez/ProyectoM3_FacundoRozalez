@@ -52,10 +52,13 @@ export function setupChatLogic() {
         const text = input.value;
         if (!validateInput(text)) return;
 
-        // 1. Agregamos localmente para feedback inmediato
+        // 1. Feedback inmediato: agregamos el mensaje del usuario
         conversationHistory.push({ role: 'user', text });
         renderHistory();
         input.value = '';
+
+        // Bloqueamos el input mientras Optimus responde (buena práctica)
+        input.disabled = true;
 
         try {
             const response = await fetch('/api/functions', {
@@ -63,29 +66,37 @@ export function setupChatLogic() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: text,
-                    history: conversationHistory.slice(0, -1)
+                    history: conversationHistory.slice(0, -1) // Enviamos el historial acumulado
                 })
             });
 
-            if (!response.ok) throw new Error('Error en la API');
+            if (!response.ok) throw new Error('Error en la comunicación con la Matrix');
 
             const data = await response.json();
 
             /**
-             * 2. CORRECCIÓN CLAVE:
-             * Sincronizamos el historial con lo que viene del backend (formato Gemini)
-             * convirtiéndolo de nuevo a tu formato plano {role, text}
+             * 2. SINCRONIZACIÓN ROBUSTA:
+             * Mapeamos el historial que devuelve el backend al formato plano
+             * que usa tu función renderHistory.
              */
-            conversationHistory = data.updatedHistory.map(msg => ({
-                role: msg.role === 'user' ? 'user' : 'model',
-                text: msg.parts[0].text // Extraemos el texto de la estructura de Gemini
-            }));
+            conversationHistory = data.updatedHistory.map(msg => {
+                // Buscamos el texto de forma segura en cualquier formato posible
+                const content = msg.text || (msg.parts && msg.parts[0] && msg.parts[0].text) || "";
+                return {
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    text: content
+                };
+            });
 
             renderHistory();
         } catch (error) {
             console.error('Error:', error);
             conversationHistory.push({ role: 'model', text: 'La Matrix está desconectada. ¡Resistan!' });
             renderHistory();
+        } finally {
+            // Siempre desbloqueamos el input al terminar
+            input.disabled = false;
+            input.focus();
         }
     };
 
