@@ -23,10 +23,10 @@ export function setupChatLogic() {
 
     const sendMessage = async () => {
         const text = input.value.trim();
-        // Usamos tu validador importado
+        
         if (!validateInput(text)) return;
 
-        // 1. Agregamos el mensaje del usuario y bloqueamos la entrada
+        // 1. Añadimos el mensaje del usuario y bloqueamos la interfaz
         conversationHistory.push({ role: 'user', text });
         renderHistory();
         
@@ -34,8 +34,8 @@ export function setupChatLogic() {
         input.disabled = true;
         btn.disabled = true;
 
-        // 2. Indicador visual de carga
-        const loadingMsg = { role: 'model', text: 'Analizando transmisiones...' };
+        // 2. Indicador visual "épico" de carga
+        const loadingMsg = { role: 'model', text: 'Procesando coordenadas de la Matrix...' };
         conversationHistory.push(loadingMsg);
         renderHistory();
 
@@ -45,43 +45,42 @@ export function setupChatLogic() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: text,
-                    history: conversationHistory.slice(0, -2) // Quitamos el mensaje del usuario y el de "Analizando..."
+                    // Enviamos el historial real (sin el mensaje de "Procesando...")
+                    history: conversationHistory.slice(0, -2) 
                 })
             });
 
             const data = await response.json();
             
-            // Quitamos el mensaje de "Analizando..." para poner la respuesta real
+            // Quitamos el mensaje de carga antes de actualizar
             conversationHistory.pop();
 
             if (!response.ok) {
-                throw new Error(data.details || 'Falla de comunicación');
+                throw new Error(data.error || 'Falla de comunicación');
             }
 
-            // 3. Sincronizamos el historial con los datos limpios del servidor
+            // 3. Sincronizamos con el historial que devuelve el backend
             conversationHistory = data.updatedHistory;
             renderHistory();
 
         } catch (error) {
-            console.error('Error en la Matrix:', error);
-            // Si hubo error, quitamos el cargando y ponemos el aviso
-            if (conversationHistory[conversationHistory.length - 1].text === 'Analizando transmisiones...') {
+            console.error('Error de enlace:', error);
+            // Limpiamos el mensaje de carga si falló
+            if (conversationHistory[conversationHistory.length - 1].text.includes('Procesando')) {
                 conversationHistory.pop();
             }
-            conversationHistory.push({ role: 'model', text: 'Enlace perdido. ¡Autobots, resistan!' });
+            conversationHistory.push({ role: 'model', text: 'Señal interrumpida. ¡Autobots, mantengan la posición!' });
             renderHistory();
         } finally {
-            // 4. Reactivamos la interfaz
+            // 4. Liberamos los controles
             input.disabled = false;
             btn.disabled = false;
             input.focus();
         }
     };
 
-    // Eventos
     btn.onclick = sendMessage;
     input.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
     
-    // Renderizado inicial (por si hay algo guardado)
     renderHistory();
 }
