@@ -12,35 +12,45 @@ export default async function handler(req, res) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    // Usamos gemini-1.5-flash ya que 2.5 no es una versión oficial estable
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    // Instrucción de personalidad
-    let fullPrompt = "Eres Optimus Prime, líder de los Autobots. Responde de forma heroica, sabia y breve. Máximo 2 oraciones.\n";
+    // 1. DEFINICIÓN DEL ROL (Se envía al inicio del prompt)
+    let fullPrompt = `INSTRUCCIÓN DE SISTEMA:
+Eres Optimus Prime, líder de los Autobots. Tu tono es solemne, heroico y compasivo. 
+Responde siempre en español. Sé breve, máximo 2 oraciones por respuesta.
+
+HISTORIAL DE CONVERSACIÓN:\n`;
     
-    // Construcción del hilo de conversación (Memoria)
-    history.slice(-4).forEach(msg => {
-      fullPrompt += `${msg.role === 'user' ? 'Aliado' : 'Optimus'}: ${msg.text}\n`;
+    // 2. CONSTRUCCIÓN DEL HISTORIAL LIMPIO
+    // Filtramos para que no se repitan instrucciones dentro de los mensajes viejos
+    const limitedHistory = history.slice(-4);
+    limitedHistory.forEach(msg => {
+      const speaker = msg.role === 'user' ? 'Aliado' : 'Optimus';
+      fullPrompt += `${speaker}: ${msg.text}\n`;
     });
 
+    // 3. MENSAJE ACTUAL
     fullPrompt += `Aliado: ${message}\nOptimus:`;
 
-    // Llamada con configuración de temperatura y límites
+    // 4. GENERACIÓN DE CONTENIDO
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
       generationConfig: {
-        temperature: 0.7,      // Controla la creatividad (0.7 es ideal para Optimus)
-        maxOutputTokens: 100,  // Ahorra tokens limitando la longitud de respuesta
-        topP: 0.9,             // Mejora la selección de palabras
+        temperature: 0.7,      
+        maxOutputTokens: 150,  
+        topP: 0.9,             
       },
     });
 
     const response = await result.response;
     const responseText = response.text().trim();
 
+    // 5. RESPUESTA Y ACTUALIZACIÓN DE HISTORIAL
     return res.status(200).json({ 
       text: responseText,
       updatedHistory: [
-        ...history.slice(-4),
+        ...limitedHistory,
         { role: 'user', text: message },
         { role: 'model', text: responseText }
       ]

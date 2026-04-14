@@ -12,7 +12,7 @@ export function setupChatLogic() {
     const renderHistory = () => {
         screen.innerHTML = conversationHistory.map(msg => `
             <div class="msg ${msg.role === 'user' ? 'user-msg' : 'prime-msg'}">
-                <b>${msg.role === 'user' ? 'Tú' : 'Optimus'}:</b> ${msg.text}
+                <b>${msg.role === 'user' ? 'ALIADO' : 'OPTIMUS'}:</b> ${msg.text}
             </div>
         `).join('');
 
@@ -21,76 +21,67 @@ export function setupChatLogic() {
         });
     };
 
-    renderHistory();
- 
-    // PRUEBA CON RESPUESTAS ESTATICAS
-    
-    /* const optimusQuotes = [
-        "La libertad es el derecho de todos los seres sintientes.",
-        "Autobots, ¡transfórmense y avancen!",
-        "No somos máquinas, somos más de lo que ves.",
-        "El destino nos ha unido, joven aliado."
-    ];
-
-    const sendMessage = () => {
-        const text = input.value;
+    const sendMessage = async () => {
+        const text = input.value.trim();
+        // Usamos tu validador importado
         if (!validateInput(text)) return;
 
-        conversationHistory.push({ role: 'user', text: text });
+        // 1. Agregamos el mensaje del usuario y bloqueamos la entrada
+        conversationHistory.push({ role: 'user', text });
         renderHistory();
         
-        setTimeout(() => {
-            const reply = optimusQuotes[Math.floor(Math.random() * optimusQuotes.length)];
-            conversationHistory.push({ role: 'model', text: reply });
-            renderHistory();
-        }, 600);
-
         input.value = '';
-    }; */
+        input.disabled = true;
+        btn.disabled = true;
 
-    const sendMessage = async () => {
-    const text = input.value.trim();
-    if (!text) {
-      return;
-    }
+        // 2. Indicador visual de carga
+        const loadingMsg = { role: 'model', text: 'Analizando transmisiones...' };
+        conversationHistory.push(loadingMsg);
+        renderHistory();
 
-    conversationHistory.push({ role: 'user', text });
-    renderHistory();
-    input.value = '';
-    input.disabled = true;
+        try {
+            const response = await fetch('/api/functions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: text,
+                    history: conversationHistory.slice(0, -2) // Quitamos el mensaje del usuario y el de "Analizando..."
+                })
+            });
 
-    try {
-        const response = await fetch('/api/functions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: text,
-                history: conversationHistory.slice(0, -1)
-            })
-        });
+            const data = await response.json();
+            
+            // Quitamos el mensaje de "Analizando..." para poner la respuesta real
+            conversationHistory.pop();
 
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.details || 'Error');
+            if (!response.ok) {
+                throw new Error(data.details || 'Falla de comunicación');
+            }
+
+            // 3. Sincronizamos el historial con los datos limpios del servidor
+            conversationHistory = data.updatedHistory;
+            renderHistory();
+
+        } catch (error) {
+            console.error('Error en la Matrix:', error);
+            // Si hubo error, quitamos el cargando y ponemos el aviso
+            if (conversationHistory[conversationHistory.length - 1].text === 'Analizando transmisiones...') {
+                conversationHistory.pop();
+            }
+            conversationHistory.push({ role: 'model', text: 'Enlace perdido. ¡Autobots, resistan!' });
+            renderHistory();
+        } finally {
+            // 4. Reactivamos la interfaz
+            input.disabled = false;
+            btn.disabled = false;
+            input.focus();
         }
+    };
 
-        conversationHistory = data.updatedHistory;
-        renderHistory();
-
-    } catch (error) {
-        console.error(error);
-        conversationHistory.push({ role: 'model', text: 'Enlace perdido. ¡Resistan!' });
-        renderHistory();
-    } finally {
-        input.disabled = false;
-        input.focus();
-    }
-};
-
+    // Eventos
     btn.onclick = sendMessage;
     input.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
+    
+    // Renderizado inicial (por si hay algo guardado)
+    renderHistory();
 }
-
-
-
-
