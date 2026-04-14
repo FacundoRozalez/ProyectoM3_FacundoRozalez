@@ -8,45 +8,57 @@ export default async function handler(req, res) {
   try {
     const { message, history = [] } = req.body;
     
-    if (!message || message.trim().length === 0) {
+    // Validamos que el mensaje sea texto real
+    if (!message || String(message).trim().length === 0) {
       return res.status(400).json({ error: 'Debes proporcionar un mensaje' });
     }
     
-    // Inicializar Gemini (Tal cual tu ejemplo)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash' 
     });
     
-    // Construimos el prompt pegando el historial (Memoria)
+    // 1. BLINDAJE DEL HISTORIAL: Forzamos String y filtramos nulos
     let promptContexto = "Eres Optimus Prime, líder de los Autobots. Responde de forma heroica, sabia y breve.\n";
     
-    history.slice(-4).forEach(msg => {
-      promptContexto += `${msg.role === 'user' ? 'Aliado' : 'Optimus'}: ${msg.text}\n`;
+    // Nos aseguramos de que history sea un array para evitar errores de .slice
+    const cleanHistory = Array.isArray(history) ? history.slice(-4) : [];
+    
+    cleanHistory.forEach(msg => {
+      const texto = String(msg.text || "");
+      const rol = msg.role === 'user' ? 'Aliado' : 'Optimus';
+      promptContexto += `${rol}: ${texto}\n`;
     });
 
-    // Agregamos la pregunta actual
-    const promptFinal = `${promptContexto}Aliado: ${message}\nOptimus:`;
+    const promptFinal = `${promptContexto}Aliado: ${String(message)}\nOptimus:`;
     
-    // Ejecución directa (Igual que en tu código de definiciones)
-    const result = await model.generateContent(promptFinal);
+    // 2. LLAMADA ROBUSTA: Enviamos el prompt estructurado
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: promptFinal }] }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 150,
+      }
+    });
+
     const response = await result.response;
     const responseText = response.text().trim();
     
-    // Devolvemos la respuesta y el historial actualizado
     return res.status(200).json({ 
       text: responseText,
       updatedHistory: [
-        ...history.slice(-4),
-        { role: 'user', text: message },
+        ...cleanHistory,
+        { role: 'user', text: String(message) },
         { role: 'model', text: responseText }
       ]
     });
     
   } catch (error) {
     console.error('Error llamando a Gemini:', error);
+    // Devolvemos el error real para debuguear en la consola del navegador
     return res.status(500).json({ 
-      error: 'Error al obtener respuesta de la Matrix' 
+      error: 'Error al obtener respuesta de la Matrix',
+      details: error.message 
     });
   }
 }
