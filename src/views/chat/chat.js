@@ -7,7 +7,7 @@ export function setupChatLogic() {
     const input = document.getElementById('user-msg');
     const screen = document.getElementById('chat-screen');
 
-    if (!btn) return;
+    if (!btn || !input || !screen) return;
 
     const renderHistory = () => {
         screen.innerHTML = conversationHistory.map(msg => `
@@ -15,18 +15,16 @@ export function setupChatLogic() {
                 <b>${msg.role === 'user' ? 'ALIADO' : 'OPTIMUS'}:</b> ${msg.text}
             </div>
         `).join('');
-
-        requestAnimationFrame(() => {
-            screen.scrollTop = screen.scrollHeight;
-        });
+        
+        // Scroll suave al final
+        screen.scrollTo({ top: screen.scrollHeight, behavior: 'smooth' });
     };
 
     const sendMessage = async () => {
         const text = input.value.trim();
-        
         if (!validateInput(text)) return;
 
-        // 1. Añadimos el mensaje del usuario y bloqueamos la interfaz
+        // 1. Mostrar mensaje del usuario inmediatamente
         conversationHistory.push({ role: 'user', text });
         renderHistory();
         
@@ -34,10 +32,11 @@ export function setupChatLogic() {
         input.disabled = true;
         btn.disabled = true;
 
-        // 2. Indicador visual "épico" de carga
-        const loadingMsg = { role: 'model', text: 'Procesando coordenadas de la Matrix...' };
-        conversationHistory.push(loadingMsg);
-        renderHistory();
+        // 2. Placeholder de "escribiendo"
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'msg prime-msg';
+        loadingDiv.innerHTML = '<b>OPTIMUS:</b> <span class="typing">Analizando transmisión...</span>';
+        screen.appendChild(loadingDiv);
 
         try {
             const response = await fetch('/api/functions', {
@@ -45,34 +44,23 @@ export function setupChatLogic() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: text,
-                    // Enviamos el historial real (sin el mensaje de "Procesando...")
-                    history: conversationHistory.slice(0, -2) 
+                    // Enviamos el historial previo (sin el mensaje actual que acabamos de pushear)
+                    history: conversationHistory.slice(0, -1)
                 })
             });
 
             const data = await response.json();
-            
-            // Quitamos el mensaje de carga antes de actualizar
-            conversationHistory.pop();
+            if (!response.ok) throw new Error(data.error);
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Falla de comunicación');
-            }
-
-            // 3. Sincronizamos con el historial que devuelve el backend
+            // 3. Actualizamos el historial con la respuesta real
             conversationHistory = data.updatedHistory;
             renderHistory();
 
         } catch (error) {
-            console.error('Error de enlace:', error);
-            // Limpiamos el mensaje de carga si falló
-            if (conversationHistory[conversationHistory.length - 1].text.includes('Procesando')) {
-                conversationHistory.pop();
-            }
-            conversationHistory.push({ role: 'model', text: 'Señal interrumpida. ¡Autobots, mantengan la posición!' });
+            console.error('Error:', error);
+            conversationHistory.push({ role: 'model', text: 'Interferencia en la Matrix. ¡Resistan!' });
             renderHistory();
         } finally {
-            // 4. Liberamos los controles
             input.disabled = false;
             btn.disabled = false;
             input.focus();
@@ -81,6 +69,4 @@ export function setupChatLogic() {
 
     btn.onclick = sendMessage;
     input.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
-    
-    renderHistory();
 }
