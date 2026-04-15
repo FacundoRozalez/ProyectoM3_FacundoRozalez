@@ -14,26 +14,26 @@ export default async function handler(req, res) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    const limitedHistory = history.slice(-6);
+    // 1. Limpiamos y limitamos el historial a los últimos 6 mensajes
+    const limitedHistory = Array.isArray(history) ? history.slice(-6) : [];
 
-      // Usamos 1.5-flash para tener más mensajes disponibles y estabilidad
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-flash', // Mantenemos tu versión 2.5
       systemInstruction: "Eres Optimus Prime. Responde de forma heroica y sabia. ¡IMPORTANTE!: Tus respuestas deben ser muy breves, de máximo dos oraciones."
     });
 
-    // Formateamos el historial al estándar de Google
-    const formattedHistory = limitedHistoryhistory.map(msg => ({
+    // 2. CORRECCIÓN: Quitamos el error de dedo "limitedHistoryhistory"
+    const formattedHistory = limitedHistory.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
+      parts: [{ text: String(msg.text) }]
     }));
 
-      const chat = model.startChat({
-    history: formattedHistory,
-    generationConfig: {
-      temperature: 0.8,
-      maxOutputTokens: 100, // Bajado de 500 a 100: ideal para respuestas cortas
-    },
+    const chat = model.startChat({
+      history: formattedHistory,
+      generationConfig: {
+        temperature: 0.8,
+        maxOutputTokens: 100, // Optimizado para respuestas cortas
+      },
     });
 
     const result = await chat.sendMessage(String(message));
@@ -41,9 +41,8 @@ export default async function handler(req, res) {
     
     return res.status(200).json({ 
       text: responseText,
-      // Devolvemos el historial actualizado para que el frontend lo guarde
       updatedHistory: [
-        ...history,
+        ...history, // Mantenemos el historial completo para el frontend
         { role: 'user', text: String(message) },
         { role: 'model', text: responseText }
       ]
