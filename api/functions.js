@@ -14,25 +14,26 @@ export default async function handler(req, res) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    // Usamos 1.5-flash para tener más mensajes disponibles y estabilidad
+    const limitedHistory = history.slice(-6);
+
+      // Usamos 1.5-flash para tener más mensajes disponibles y estabilidad
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
-      systemInstruction: "Eres Optimus Prime, líder de los Autobots. Tu tono es heroico, solemne, sabio y protector. Hablas de libertad, honor y la protección de la Tierra. Responde de forma clara pero inspiradora."
+      systemInstruction: "Eres Optimus Prime. Responde de forma heroica y sabia. ¡IMPORTANTE!: Tus respuestas deben ser muy breves, de máximo dos oraciones."
     });
 
     // Formateamos el historial al estándar de Google
-    const formattedHistory = history.map(msg => ({
+    const formattedHistory = limitedHistoryhistory.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
     }));
 
-    // Iniciamos el chat nativo
-    const chat = model.startChat({
-      history: formattedHistory,
-      generationConfig: {
-        temperature: 0.8,
-        maxOutputTokens: 500, // Aumentado para que no se corte
-      },
+      const chat = model.startChat({
+    history: formattedHistory,
+    generationConfig: {
+      temperature: 0.8,
+      maxOutputTokens: 100, // Bajado de 500 a 100: ideal para respuestas cortas
+    },
     });
 
     const result = await chat.sendMessage(String(message));
