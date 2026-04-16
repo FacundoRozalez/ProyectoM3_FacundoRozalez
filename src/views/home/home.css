@@ -111,7 +111,7 @@
 /* --- DESKTOP HOME (1025px+) --- */
 @media (min-width: 1025px) {
     .hero-container {
-        padding: 50px;
+        padding: 20px;
         max-width: 650px;
         border-top: 5px solid var(--prime-blue);
         border-bottom: 5px solid var(--prime-blue);

@@ -130,7 +130,8 @@
     #chat-wrapper {
         background-size: 60% 45%;
         max-width: 900px;
-        margin: 0 auto;
+        margin: 15px auto;
+        height: calc(100dvh - 100px); 
     }
     #chat-screen {
         padding: 25px;

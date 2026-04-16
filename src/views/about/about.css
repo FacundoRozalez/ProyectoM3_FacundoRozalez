@@ -108,7 +108,7 @@
 @media (min-width: 1025px) {
     .about-card {
         padding: 45px;
-        max-width: 70%;
+        max-width: 90%;
         max-height: 80%;
     }
     .about-title {
