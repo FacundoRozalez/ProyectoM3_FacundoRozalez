@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }));
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash', // Nota: Asegúrate de usar un modelo existente como gemini-1.5-flash
+      model: 'gemini-2.5-flash', // Nota: Asegúrate de usar un modelo existente como gemini-1.5-flash
       systemInstruction: "Eres Optimus Prime. Responde de forma heroica y sabia. ¡IMPORTANTE!: Tus respuestas deben ser muy breves, de máximo dos oraciones."
     });
 
