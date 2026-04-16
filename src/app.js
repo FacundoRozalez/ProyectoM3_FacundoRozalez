@@ -7,18 +7,21 @@ const root = document.getElementById('root');
 const handleRoute = () => {
     const { renderFn, activeId, path } = getRouteData(window.location.pathname);
     
-    // Usamos el UI Manager para actualizar la pantalla
     UIManager.renderView(root, renderFn());
     UIManager.updateNav(activeId);
 
     // Lógica específica
     if (path.includes('chat')) {
-        setupChatLogic();
+        // CAMBIO AQUÍ: Recuperamos el historial del estado del navegador
+        // y se lo pasamos a la función.
+        const savedHistory = window.history.state?.history || [];
+        setupChatLogic(savedHistory);
     }
 };
 
 window.navigateTo = (path) => {
-    window.history.pushState({}, path, window.location.origin + path);
+    // Al navegar, creamos la nueva entrada con un estado inicial
+    window.history.pushState({ history: window.history.state?.history || [] }, "", path);
     handleRoute();
 };
 
