@@ -15,14 +15,13 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
     // 1. Formateamos el historial para Gemini
-    // Limitamos a los últimos 6 para no saturar la ventana de contexto
     const formattedHistory = history.slice(-6).map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: String(msg.text) }]
     }));
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash', // Nota: Asegúrate de usar un modelo existente como gemini-1.5-flash
+      model: 'gemini-2.5-flash', // Modelo estable y rápido
       systemInstruction: "Eres Optimus Prime. Responde de forma heroica y sabia. ¡IMPORTANTE!: Tus respuestas deben ser muy breves, de máximo dos oraciones."
     });
 
@@ -30,18 +29,17 @@ export default async function handler(req, res) {
       history: formattedHistory,
       generationConfig: {
         temperature: 0.6,
-        maxOutputTokens: 150, 
+        maxOutputTokens: 500, // Evita que el mensaje se corte
       },
     });
 
     const result = await chat.sendMessage(String(message));
     const responseText = result.response.text().trim();
     
-    // 2. Construimos el historial actualizado
-    // Como el frontend ya tiene el último mensaje del 'user', 
-    // solo nos aseguramos de que el array final sea coherente.
+    // 2. Construimos el historial actualizado para devolver al frontend
     const newHistory = [
       ...history, 
+      { role: 'user', text: String(message) }, 
       { role: 'model', text: responseText }
     ];
 

@@ -12,16 +12,18 @@ const handleRoute = () => {
 
     // Lógica específica
     if (path.includes('chat')) {
-        // CAMBIO AQUÍ: Recuperamos el historial del estado del navegador
-        // y se lo pasamos a la función.
+        // Recuperamos el historial del estado del navegador
         const savedHistory = window.history.state?.history || [];
         setupChatLogic(savedHistory);
     }
 };
 
 window.navigateTo = (path) => {
-    // Al navegar, creamos la nueva entrada con un estado inicial
-    window.history.pushState({ history: window.history.state?.history || [] }, "", path);
+    // IMPORTANTE: Antes de navegar, verificamos si ya existe historial en el estado actual
+    // para no perder los mensajes al movernos entre "Home", "About" y "Chat".
+    const currentHistory = window.history.state?.history || [];
+    
+    window.history.pushState({ history: currentHistory }, "", path);
     handleRoute();
 };
 
@@ -30,7 +32,10 @@ document.getElementById('nav-home').onclick = () => window.navigateTo('/');
 document.getElementById('nav-chat').onclick = () => window.navigateTo('/chat');
 document.getElementById('nav-about').onclick = () => window.navigateTo('/about');
 
-window.onpopstate = handleRoute;
+// Esto permite que el historial se recupere al usar las flechas del navegador (atrás/adelante)
+window.onpopstate = (event) => {
+    handleRoute();
+};
 
 // Inicialización
 handleRoute();
