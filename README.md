@@ -1,52 +1,86 @@
 # Optimus Prime Chat - SPA con Gemini AI
 
-Este proyecto es una Single Page Application (SPA) que permite interactuar con Optimus Prime, líder de los Autobots. Utiliza la API de Google Gemini para generar respuestas heroicas y sabias, manteniendo el contexto de la conversación en tiempo real.
+Este proyecto es una aplicación de una sola página (SPA) que permite interactuar con Optimus Prime, el líder de los Autobots. Utiliza la API de Google Gemini para generar respuestas heroicas y sabias, manteniendo el contexto de la conversación en tiempo real.
 
-Link al Proyecto desplegado: https://proyecto-m3-facundo-rozalez.vercel.app/
+**Enlace al proyecto:** https://proyecto-m3-facundo-rozalez.vercel.app
 
-## Características
+## 🚀 Características
 
-- Navegación SPA: Implementación de routing mediante la History API (pushState y popstate).
-- Arquitectura Segura: Uso de Vercel Serverless Functions para proteger la API Key en el backend.
-- Diseño Mobile-First: Interfaz responsive adaptada a móviles, tablets y desktops.
-- Personalidad Definida: System Prompt optimizado para respuestas heroicas y breves (máximo 2 oraciones).
-- Gestión de Contexto: Envío del historial de mensajes para una conversación coherente.
+*   **Navegación SPA:** Implementación de enrutamiento nativo mediante la API de historial (`pushState` y `popstate`).
+*   **Arquitectura segura:** Uso de Vercel Serverless Functions para proteger la clave de la API en el backend.
+*   **Diseño modular:** Organización basada en vistas (`views`), servicios y componentes independientes.
+*   **Personalidad definida:** Instrucción del sistema optimizada para respuestas heroicas y breves.
+*   **F5-Safe:** Configuración de reescrituras en Vercel para soportar la recarga de la página en rutas como `/chat` o `/about`.
 
-## Estructura del Proyecto
+## 📂 Estructura del proyecto
 
-- api/functions.js     : Serverless Function (Proxy Gemini)
-- api/mookchat.js      : Mock para pruebas sin consumo de tokens
-- src/components/      : Vistas de la SPA (Home, Chat, About)
-- src/utils/           : Validadores y formateadores de datos
-- src/app.js           : Punto de entrada y lógica de Router
-- src/styles.css       : Estilos con enfoque Mobile-First
-- tests/               : Pruebas unitarias con Vitest
+*   `api/functions.js`: Función sin servidor (Proxy Gemini).
+*   `api/mockchat.js`: Mock para pruebas sin consumo de tokens.
+*   `src/components/`: Componentes globales (Navbar, Loader).
+*   `src/services/`: Lógica del Router y UI Manager.
+*   `src/utils/`: Validadores (`validators.js`).
+*   `src/views/`: Vistas con CSS y JS encapsulado (Home, Chat, About).
+*   `src/app.js`: Punto de entrada principal.
+*   `tests/`: Pruebas unitarias con Vitest.
+*   `vercel.json`: Configuración de rutas para el despliegue.
 
-## Instalación y Configuración
+## 🛠️ Instalación y configuración
 
-1. Clonar el repositorio:
-   git clone https://github.com
+1.  **Clonar el repositorio:**  
+    `git clone https://github.com/FacundoRozalez/ProyectoM3_FacundoRozalez.git`
+2.  **Instalar dependencias:**  
+    `npm install`
+3.  **Configurar variables de entorno:**  
+    Crea un archivo `.env` en la raíz del proyecto y agrega tu clave:  
+    `GEMINI_API_KEY=tu_clave_de_google_ai_studio`
+4.  **Ejecutar en entorno local:**  
+    `npm run dev`
 
-2. Instalar dependencias:
-   npm install
+## 🧪 Pruebas
 
-3. Configurar variables de entorno:
-   Crea un archivo .env en la raíz del proyecto y agrega tu clave de API:
-   GEMINI_API_KEY=tu_clave_de_google_ai_studio
+Para ejecutar las pruebas unitarias con Vitest:  
+`npm run test`
 
-4. Ejecutar en entorno local:
-   npm run dev
+*Las pruebas cubren: validación de mensajes, enrutamiento de la aplicación y lógica de utilidades.*
 
-## Testing
+## 🤖 Uso de Inteligencia Artificial (GEMINI AI / Capa Gratuita)
 
-Para ejecutar las pruebas unitarias con Vitest:
-npm run test
+Se utilizó asistencia de IA durante el desarrollo para optimizar la arquitectura, gestionar los límites de la capa gratuita y mejorar la experiencia del usuario.
 
-*Los tests cubren: validación de mensajes, formateo de historial para la API y selección de prompts.*
+### 🛠️ Refactorización y Lógica
 
-## Uso de Inteligencia Artificial
+Se migró la gestión de mensajes al método nativo de Gemini, optimizando el consumo de tokens y asegurando la coherencia del historial en entornos Serverless.
 
-Durante el desarrollo se utilizó asistencia de IA para:
-- Refactorización: Implementación del método nativo startChat para gestión de memoria.
-- Prompt Engineering: Ajuste del System Instruction para lograr el tono del personaje y brevedad.
-- Estrategia de Cuotas: Creación de un sistema de Mocking para desarrollo local sin agotar la API.
+
+| Fase de Implementación | Captura de Pantalla |
+| :--- | :--- |
+| **Análisis de Memoria** | ![Análisis](./src/assets/screenshots/image-6.png) |
+| **Estructura de startChat** | ![Estructura](./src/assets/screenshots/image-7.png) |
+| **Filtrado de Historial (Tokens)** | ![Filtrado](./src/assets/screenshots/image-8.png) |
+| **Mapeo de Roles y Parts** | ![Mapeo](./src/assets/screenshots/image-10.png) |
+| **Lógica de Persistencia** | ![Persistencia](./src/assets/screenshots/image-9.png) |
+| **Validación de Respuesta** | ![Validación](./src/assets/screenshots/image-11.png) |
+### 🎭 Prompt Engineering
+
+Se ajustó la instrucción del sistema para capturar la esencia de Optimus Prime (heroico, sabio y breve).
+
+
+| Fase | Captura de Pantalla |
+| :--- | :--- |
+| **Diseño del Prompt** | ![Diseño del Prompt](./src/assets/screenshots/image-3.png) |
+| **Respuesta de la IA (Lógica)** | ![Lógica Generada](./src/assets/screenshots/image-4.png) |
+| **Respuesta de la IA (Ejemplo)** | ![Ejemplo de Respuesta](./src/assets/screenshots/image-5.png) |
+
+### 🚀 Configuración de Despliegue
+
+Se solucionó el error "Cannot GET" mediante la creación de reglas de redirección en el servidor para soportar el ruteo de la SPA.
+
+
+| Proceso de Solución | Captura de Pantalla |
+| :--- | :--- |
+| **Diagnóstico del Error** | ![Error F5](./src/assets/screenshots/image.png) |
+| **Propuesta de vercel.json** | ![Solución Vercel](./src/assets/screenshots/image-1.png) |
+| **Validación de Rutas** | ![Ruta Funcionando](./src/assets/screenshots/image-2.png) |
+
+---
+"El destino nos ha llevado por este camino, pero el código es nuestro para escribir. Este es solo el comienzo. ¡Autobots, transformense y avancen!"
