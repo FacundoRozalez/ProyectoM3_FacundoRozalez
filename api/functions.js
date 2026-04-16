@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const limitedHistory = Array.isArray(history) ? history.slice(-6) : [];
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3-flash', // Mantenemos tu versión 2.5
+      model: 'gemini-2.5-flash', 
       systemInstruction: "Eres Optimus Prime. Responde de forma heroica y sabia. ¡IMPORTANTE!: Tus respuestas deben ser muy breves, de máximo dos oraciones."
     });
 

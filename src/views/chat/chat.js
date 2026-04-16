@@ -39,7 +39,9 @@ export function setupChatLogic() {
         screen.appendChild(loadingDiv);
 
         try {
-            const response = await fetch('/api/functions', {
+            // Alternar entre el servicio real de Gemini y el Mock de pruebas para no agotar la cuota diaria (20 RPD)
+            // const response = await fetch('/api/mookchat', { // <--- MOCK: Usar para pruebas locales sin gastar tokens
+            const response = await fetch('/api/functions', { // <--- PRODUCCIÓN: Conexión real con Gemini AI
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
